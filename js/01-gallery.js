@@ -2,9 +2,10 @@ import { galleryItems } from './gallery-items.js';
 
 // Change code below this line
 
-function galleryItemsMakeUp(galleryItems){
-   return galleryItems.map(({preview, original, description}) => {
-            return `
+function galleryItemsMakeUp(galleryItems) {
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `
             <li class="gallery__item">
             <a class="gallery__link" href="${original}">
             <img
@@ -16,53 +17,42 @@ function galleryItemsMakeUp(galleryItems){
             />
             </a>
             </li>`;
-        }).join('');
-
-};
+    })
+    .join('');
+}
 
 const galleryRef = document.querySelector('.gallery');
 
 galleryRef.insertAdjacentHTML('beforeend', galleryItemsMakeUp(galleryItems));
 galleryRef.addEventListener('click', onGalleryImageClick);
 
-function onGalleryImageClick(e){
+function onGalleryImageClick(e) {
+  e.preventDefault();
 
-    e.preventDefault();
-
-    if (!e.target.classList.contains('gallery__image')){
-       
-        return
-        
-    } else {
-
-            const instance = basicLightbox.create(`
+  if (!e.target.classList.contains('gallery__image')) {
+    return;
+  } else {
+    const instance = basicLightbox.create(`
                 <img src="${e.target.dataset.source}" width="800" height="600">
             `);
 
-            instance.show();
+    instance.show();
 
-            const modalRef = document.querySelector('.basicLightbox');
+    const modalRef = document.querySelector('.basicLightbox');
 
-            modalRef.addEventListener('click', closeModal);
-            document.addEventListener('keydown', closeModal);
-           
+    modalRef.addEventListener('click', closeModal);
+    document.addEventListener('keydown', closeModal);
 
-            function removerEventListener(){
+    function removerEventListener() {
+      document.removeEventListener('keydown', closeModal);
+    }
 
-                document.removeEventListener('keydown', closeModal);
+    function closeModal(event) {
+      if (event.key === 'Escape' || event.button === 0) {
+        instance.close();
 
-            }
-
-
-            function closeModal(event) {
-
-                        if (event.key === 'Escape' || event.button === 0) {
-                      
-                        instance.close();
-
-                        removerEventListener();
-                        
-                    } 
-            };
-    };
+        removerEventListener();
+      }
+    }
+  }
 }
